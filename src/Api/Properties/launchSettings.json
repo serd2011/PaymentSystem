@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:5002/api/v1/account",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5002"
+      },
+      "distributionName": "Debian"
+    }
+  }
+}
