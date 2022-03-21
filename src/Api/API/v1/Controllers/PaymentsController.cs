@@ -7,6 +7,12 @@ namespace API.v1.Controllers
     [ApiController]
     public class PaymentsController : ControllerBase
     {
+        private readonly Infrastructure.Database.Context _dbContext;
+        public PaymentsController(Infrastructure.Database.Context context)
+        {
+            _dbContext = context;
+        }
+
         [HttpGet]
         public void Get() { }
 

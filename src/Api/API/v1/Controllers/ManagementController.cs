@@ -7,6 +7,12 @@ namespace API.v1.Controllers
     [ApiController]
     public class ManagementController : ControllerBase
     {
+        private readonly Infrastructure.Database.Context _dbContext;
+        public ManagementController(Infrastructure.Database.Context context)
+        {
+            _dbContext = context;
+        }
+
         [HttpPost]
         public void Add() { }
 
