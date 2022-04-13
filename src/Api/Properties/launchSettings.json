@@ -3,7 +3,7 @@
   "profiles": {
     "WSL": {
       "commandName": "WSL",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "http://localhost:5002/api/v1/account",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

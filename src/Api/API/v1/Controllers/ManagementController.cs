@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using API.v1.Models.Management;
+using API.v1.Models;
+
 namespace API.v1.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -13,10 +16,16 @@ namespace API.v1.Controllers
             _dbContext = context;
         }
 
-        [HttpPost]
-        public void Add() { }
+        [HttpPost("add/")]
+        public IActionResult Add([FromBody] AddRequest data)
+        {
+            return new OkResult();
+        }
 
-        [HttpPost]
-        public void Remove() { }
+        [HttpPost("remove/")]
+        public IActionResult Remove([FromBody] RemoveRequest data)
+        {
+            return new OkResult();
+        }
     }
 }

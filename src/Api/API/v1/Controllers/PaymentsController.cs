@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using API.v1.Models.Payments;
+using API.v1.Models;
+
 namespace API.v1.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -14,9 +17,15 @@ namespace API.v1.Controllers
         }
 
         [HttpGet]
-        public void Get() { }
+        public IActionResult Get([FromBody] GetRequest data)
+        {
+            return new OkResult();
+        }
 
         [HttpPost]
-        public void Post() { }
+        public IActionResult Post([FromBody] PostRequest data)
+        {
+            return new OkResult();
+        }
     }
 }

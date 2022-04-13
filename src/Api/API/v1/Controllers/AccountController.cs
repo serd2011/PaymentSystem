@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using API.v1.Models.Account;
+using API.v1.Models;
+
 namespace API.v1.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -14,6 +17,15 @@ namespace API.v1.Controllers
         }
 
         [HttpGet]
-        public void Get() { }
+        public IActionResult Get()
+        {
+            return new OkObjectResult(new GetResponse() { balance = 10 });
+        }
+
+        [HttpGet("{userId:int}")]
+        public IActionResult Get(int userId)
+        {
+            return new BadRequestObjectResult(new ErrorResponseModel() { code = 1, description = "There is no user with id " + userId.ToString() });
+        }
     }
 }
