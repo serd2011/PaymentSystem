@@ -37,7 +37,7 @@ namespace API.v1.Controllers
         {
             var user = _dbContext.Users.Find(userId);
             if (user == null)            
-                return new BadRequestObjectResult(new ErrorResponseModel() { code = 1, description = "There is no user with id " + userId.ToString() });
+                return new BadRequestObjectResult(new ErrorResponseModel() { code = 1, description = $"There is no user with id {userId}." });
             return new OkObjectResult(new GetResponse() { balance = (uint)user.Balance });
         }
     }
