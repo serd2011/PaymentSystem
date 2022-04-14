@@ -12,6 +12,7 @@ namespace API.v1.Models.Management
 
     public class AddResponse
     {
+        public uint balance;
     }
 
     public class RemoveRequest
@@ -24,5 +25,6 @@ namespace API.v1.Models.Management
 
     public class RemoveResponse
     {
+        public uint balance;
     }
 }
