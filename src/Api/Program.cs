@@ -9,8 +9,18 @@ using API.Middleware.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Reading messages configuration file
+builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+{
+    config.AddJsonFile("messages.json", optional: false, reloadOnChange: true); ;
+});
 
+// Configurations
+builder.Services.ConfigureConnection(builder.Configuration);
+builder.Services.ConfigureVersioning();
+builder.Services.ConfigureHeaders();
+
+// JWT Tokens Authorisation setup
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -36,6 +46,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("HasUserId", policy => policy.RequireClaim("id"));
 });
 
+// Controllers setup
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ModelAttributesValidationFilter>();
@@ -45,9 +56,6 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
-builder.Services.ConfigureConnection(builder.Configuration);
-builder.Services.ConfigureVersioning();
-builder.Services.ConfigureHeaders();
 
 
 var app = builder.Build();

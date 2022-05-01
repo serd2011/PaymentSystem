@@ -56,8 +56,7 @@ namespace API.Infrastructure.Database
 
                 entity.HasOne(d => d.To)
                     .WithMany(p => p.PaymentTos)
-                    .HasForeignKey(d => d.ToId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .HasForeignKey(d => d.ToId);
             });
 
             modelBuilder.Entity<User>(entity =>

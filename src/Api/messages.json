@@ -1,0 +1,10 @@
+{
+  "messages": {
+    "management": {
+      "default_payment_description": {
+        "add": "Начисление средств",
+        "remove": "Списание средств"
+      }
+    }
+  }
+}

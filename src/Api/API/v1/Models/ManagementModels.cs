@@ -8,6 +8,7 @@ namespace API.v1.Models.Management
         public int? id { get; set; }
         [Required]
         public uint? amount { get; set; }
+        public string? description { get; set; }
     }
 
     public class AddResponse
@@ -21,6 +22,7 @@ namespace API.v1.Models.Management
         public int? id { get; set; }
         [Required]
         public uint? amount { get; set; }
+        public string? description { get; set; }
     }
 
     public class RemoveResponse
