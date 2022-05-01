@@ -4,14 +4,15 @@ namespace API.v1.Models.Payments
 {
     public class GetRequest
     {
-        public uint? limit { get; set; }
-        public string? cursor { get; set; }
+        [Range(1, 100)]
+        public uint limit { get; set; } = 10;
+        public int? cursor { get; set; }
     }
 
     public class GetResponse
     {
         public List<Payment> operations;
-        public string cursor;
+        public int? cursor;
     }
 
     public class Payment
@@ -21,8 +22,7 @@ namespace API.v1.Models.Payments
         public DateTime date;
         public uint amount;
         public bool isPaid;
-        public int? recipient;
-        public int? sender;
+        public int userId;
     }
 
     public class PostRequest
@@ -31,9 +31,11 @@ namespace API.v1.Models.Payments
         public int? id { get; set; }
         [Required]
         public uint? amount { get; set; }
+        public string? description { get; set; }
     }
 
     public class PostResponse
     {
+        public uint balance;
     }
 }

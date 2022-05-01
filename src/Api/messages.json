@@ -5,6 +5,9 @@
         "add": "Начисление средств",
         "remove": "Списание средств"
       }
+    },
+    "payments": {
+      "default_payment_description": "Перевод"
     }
   }
 }
