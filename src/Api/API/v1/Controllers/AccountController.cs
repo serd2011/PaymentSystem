@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
+using API.Infrastructure.Database;
+
 using API.v1.Models.Account;
 using API.v1.Models;
-using API.Infrastructure.Database;
+
+using API.v1.Other;
 
 namespace API.v1.Controllers
 {
@@ -21,13 +24,7 @@ namespace API.v1.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var user = _dbContext.Users.Find(int.Parse(User.FindFirst("id").Value));
-            if(user == null)
-            {
-                user = new User() { Id = int.Parse(User.FindFirst("id").Value) };
-                _dbContext.Users.Add(user);
-                _dbContext.SaveChanges();
-            }
+            var user = _dbContext.getUserOrCreateNew(int.Parse(User.FindFirst("id").Value));           
             return new OkObjectResult(new GetResponse() { balance = (uint)user.Balance });
         }
 

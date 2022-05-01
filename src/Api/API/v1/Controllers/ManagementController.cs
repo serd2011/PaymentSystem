@@ -6,7 +6,7 @@ using API.Infrastructure.Database;
 
 using API.v1.Models.Management;
 using API.v1.Models;
-using API.v1.Configurations.Management;
+using API.v1.Other;
 
 namespace API.v1.Controllers
 {
@@ -27,16 +27,8 @@ namespace API.v1.Controllers
         public IActionResult Add([FromBody] AddRequest data)
         {
             _dbContext.Database.BeginTransaction();
-            var user = _dbContext.Users.Find(data.id);
-            if (user == null)
-            {
-                user = new User() { Id = (int)data.id, Balance = (int)data.amount };
-                _dbContext.Users.Add(user);               
-            }
-            else
-            {
-                user.Balance += (int)data.amount;
-            }
+            var user = _dbContext.getUserOrCreateNew(int.Parse(User.FindFirst("id").Value));
+            user.Balance += (int)data.amount;           
             _dbContext.Payments.Add(new Payment() { Amount = (int)data.amount, Description = data.description ?? _messages["default_payment_description:add"], ToId = (int)data.id });
             _dbContext.SaveChanges();
             _dbContext.Database.CommitTransaction();
