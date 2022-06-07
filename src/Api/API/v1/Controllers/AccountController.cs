@@ -24,18 +24,18 @@ namespace API.v1.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var user = _dbContext.getUserOrCreateNew(int.Parse(User.FindFirst("id").Value));           
-            return new OkObjectResult(new GetResponse() { balance = (uint)user.Balance });
+            var user = _dbContext.getUserOrCreateNew(int.Parse(User.FindFirst("id").Value));
+            return new OkObjectResult(new GetResponse() { balance = (uint)_dbContext.UsersBalances.Where(b => b.Id == user.Id).First().Balance });
         }
 
         [Authorize(Policy = "AdminOnly")]
         [HttpGet("{userId:int}")]
         public IActionResult Get(int userId)
         {
-            var user = _dbContext.Users.Find(userId);
-            if (user == null)            
+            var userBalance = _dbContext.UsersBalances.Where(b => b.Id == userId).FirstOrDefault();
+            if (userBalance == null)
                 return new BadRequestObjectResult(new ErrorResponseModel() { code = 1, description = $"There is no user with id {userId}." });
-            return new OkObjectResult(new GetResponse() { balance = (uint)user.Balance });
+            return new OkObjectResult(new GetResponse() { balance = (uint)userBalance.Balance });
         }
     }
 }

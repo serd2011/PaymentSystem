@@ -36,6 +36,5 @@ namespace API.v1.Models.Payments
 
     public class PostResponse
     {
-        public uint balance;
     }
 }

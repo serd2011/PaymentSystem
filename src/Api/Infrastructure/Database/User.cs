@@ -9,12 +9,13 @@ namespace API.Infrastructure.Database
         {
             PaymentFroms = new HashSet<Payment>();
             PaymentTos = new HashSet<Payment>();
+            Statements = new HashSet<Statement>();
         }
 
         public int Id { get; set; }
-        public int Balance { get; set; }
 
         public virtual ICollection<Payment> PaymentFroms { get; set; }
         public virtual ICollection<Payment> PaymentTos { get; set; }
+        public virtual ICollection<Statement> Statements { get; set; }
     }
 }
