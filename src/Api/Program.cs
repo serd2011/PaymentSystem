@@ -20,37 +20,41 @@ builder.Services.ConfigureConnection(builder.Configuration);
 builder.Services.ConfigureVersioning();
 builder.Services.ConfigureHeaders();
 
-// JWT Tokens Authorisation setup
+// JWT Tokens Authentication setup
+#if USE_AUTHENTICATION
 builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.SaveToken = false;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-    };
-});
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(options =>
+    {
+        options.SaveToken = false;
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidAudience = builder.Configuration["JWT:ValidAudience"],
+            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+        };
+    });
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Admin", "true"));
     options.AddPolicy("HasUserId", policy => policy.RequireClaim("id"));
 });
+#endif
 
 // Controllers setup
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ModelAttributesValidationFilter>();
+#if USE_AUTHENTICATION
     options.Filters.Add(new AuthorizeFilter("HasUserId"));
+#endif
 }).AddNewtonsoftJson();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -63,7 +67,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UseForwardedHeaders();
+#if USE_AUTHENTICATION
 app.UseAuthentication();
+#endif
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

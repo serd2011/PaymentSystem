@@ -24,7 +24,13 @@ namespace API.v1.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery] GetRequest data)
         {
-            var user = _dbContext.getUserOrCreateNew(int.Parse(User.FindFirst("id").Value));
+#if USE_AUTHENTICATION
+            int userId = int.Parse(User.FindFirst("id").Value);
+#else
+            int userId = (int)data.id;
+#endif
+
+            var user = _dbContext.getUserOrCreateNew(userId);
             if (data.cursor == null)
             {
                 data.cursor = int.MaxValue;
@@ -56,7 +62,11 @@ namespace API.v1.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] PostRequest data)
         {
+#if USE_AUTHENTICATION
             int userId = int.Parse(User.FindFirst("id").Value);
+#else
+            int userId = (int)data.fromId;
+#endif
             string desctiption = data.description ?? _messages["default_payment_description"];
 
             // Idempotensy key Check

@@ -21,14 +21,18 @@ namespace API.v1.Controllers
             _dbContext = context;
         }
 
+#if USE_AUTHENTICATION
         [HttpGet]
         public IActionResult Get()
         {
             var user = _dbContext.getUserOrCreateNew(int.Parse(User.FindFirst("id").Value));
             return new OkObjectResult(new GetResponse() { balance = (uint)_dbContext.UsersBalances.Where(b => b.Id == user.Id).First().Balance });
         }
+#endif
 
+#if USE_AUTHENTICATION
         [Authorize(Policy = "AdminOnly")]
+#endif
         [HttpGet("{userId:int}")]
         public IActionResult Get(int userId)
         {
