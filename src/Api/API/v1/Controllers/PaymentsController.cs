@@ -71,40 +71,32 @@ namespace API.v1.Controllers
 
             // Idempotensy key Check
             string? idempotencyKey = HttpContext.Request.Headers["Idempotency-Key"];
-            if(idempotencyKey == null)            
+            if (idempotencyKey == null)
                 return new BadRequestObjectResult(new ErrorResponseModel() { code = 101, description = $"Idempotency-Key header is missing" });
-            _dbContext.Database.BeginTransaction();
-            var duplicatePayment = _dbContext.Payments.Where(p => p.IdempotencyKey == idempotencyKey && p.FromId == userId).FirstOrDefault();
-            if (duplicatePayment != null)
+            using (var transaction = _dbContext.Database.BeginTransaction())
             {
-                _dbContext.Database.RollbackTransaction();
-                if (duplicatePayment.Amount == data.amount && duplicatePayment.ToId == data.id && duplicatePayment.Description == desctiption)
-                    return new OkObjectResult(new PostResponse() {});
-                else
+                var duplicatePayment = _dbContext.Payments.Where(p => p.IdempotencyKey == idempotencyKey && p.FromId == userId).FirstOrDefault();
+                if (duplicatePayment != null)
+                {
+                    if (duplicatePayment.Amount == data.amount && duplicatePayment.ToId == data.id && duplicatePayment.Description == desctiption)
+                        return new OkObjectResult(new PostResponse() { });
                     return new UnprocessableEntityObjectResult(new ErrorResponseModel() { code = 102, description = $"Idempotency-Key mismatch" });
-            }
+                }
 
-            // Checking if payment can be done
-            var destinationUser = _dbContext.Users.Find(data.id);
-            if (destinationUser == null)
-            {
-                _dbContext.Database.RollbackTransaction();
-                return new BadRequestObjectResult(new ErrorResponseModel() { code = 20, description = $"There is no user with id {data.id}." });
-            }
-            var user = _dbContext.getUserOrCreateNew(userId);
-        
-            if ((uint)_dbContext.UsersBalances.Where(b => b.Id == user.Id).First().Balance < data.amount)
-            {
-                _dbContext.Database.RollbackTransaction();
-                return new BadRequestObjectResult(new ErrorResponseModel() { code = 21, description = $"Amount {data.amount} can't be tranfered." });
-            }
+                // Checking if payment can be done
+                var destinationUser = _dbContext.Users.Find(data.id);
+                if (destinationUser == null)
+                    return new BadRequestObjectResult(new ErrorResponseModel() { code = 20, description = $"There is no user with id {data.id}." });
+                var user = _dbContext.getUserOrCreateNew(userId);
+                if ((uint)_dbContext.UsersBalances.Where(b => b.Id == user.Id).First().Balance < data.amount)
+                    return new BadRequestObjectResult(new ErrorResponseModel() { code = 21, description = $"Amount {data.amount} can't be tranfered." });
 
-            //Performing operation           
-            _dbContext.Payments.Add(new Infrastructure.Database.Payment() { Amount = (int)data.amount, Description = desctiption, FromId = userId, ToId = data.id, IdempotencyKey = idempotencyKey});
-            _dbContext.SaveChanges();
-            _dbContext.Database.CommitTransaction();
-
-            return new OkObjectResult(new PostResponse() {});
+                //Performing operation           
+                _dbContext.Payments.Add(new Infrastructure.Database.Payment() { Amount = (int)data.amount, Description = desctiption, FromId = userId, ToId = data.id, IdempotencyKey = idempotencyKey });
+                _dbContext.SaveChanges();
+                transaction.Commit();
+                return new OkObjectResult(new PostResponse() { });
+            }
         }
     }
 }
