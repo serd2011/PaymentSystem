@@ -4,10 +4,6 @@ namespace API.v1.Models.Payments
 {
     public class GetRequest
     {
-#if !USE_AUTHENTICATION
-        [Required]
-        public int? id { get; set; }
-#endif
         [Range(1, 100)]
         public uint limit { get; set; } = 10;
         public int? cursor { get; set; }

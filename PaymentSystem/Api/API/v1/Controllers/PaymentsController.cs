@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 using API.v1.Models.Payments;
 using API.v1.Models;
@@ -9,7 +10,7 @@ using Application.Exceptions;
 
 namespace API.v1.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class PaymentsController : ControllerBase
     {
@@ -21,15 +22,21 @@ namespace API.v1.Controllers
             _messages = config.GetSection("messages:payments");
         }
 
+#if USE_AUTHENTICATION
         [HttpGet]
         public IActionResult Get([FromQuery] GetRequest data)
         {
-#if USE_AUTHENTICATION
             int userId = int.Parse(User.FindFirst("id").Value);
-#else
-            int userId = (int)data.id;
+            return Get(data,userId);
+        }
 #endif
 
+#if USE_AUTHENTICATION
+        [Authorize(Policy = "AdminOnly")]
+#endif
+        [HttpGet("{userId:int}")]
+        public IActionResult Get([FromQuery] GetRequest data, int userId)
+        {
             PaymentsServiceDTOs payments;
             try
             {

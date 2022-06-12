@@ -13,7 +13,7 @@ namespace API.v1.Controllers
 #if USE_AUTHENTICATION
     [Authorize(Policy = "AdminOnly")]
 #endif
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class ManagementController : ControllerBase
     {
