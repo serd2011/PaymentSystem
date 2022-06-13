@@ -53,7 +53,7 @@ namespace API.v1.Controllers
 #if USE_AUTHENTICATION
         [Authorize(Policy = "AdminOnly")]
 #endif
-        [HttpPost("/add/{userId:int}")]
+        [HttpPost("add/{userId:int}")]
         public IActionResult Post(int userId)
         {
             try
