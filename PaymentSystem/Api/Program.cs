@@ -6,8 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 
 using API.Configurations;
 using API.Middleware.Filters;
-using Application;
-using DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 

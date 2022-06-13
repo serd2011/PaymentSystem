@@ -1,8 +1,9 @@
-﻿using Application;
-using DAL;
-using Microsoft.AspNetCore.HttpOverrides;
+﻿using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
+
+using Application;
+using DAL;
 
 namespace API.Configurations
 {
