@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IdentityModel.Tokens.Jwt;
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 using API.v1.Models.Payments;
@@ -26,7 +28,7 @@ namespace API.v1.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery] GetRequest data)
         {
-            int userId = int.Parse(User.FindFirst("id").Value);
+            int userId = int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub).Value);
             return Get(data,userId);
         }
 #endif
@@ -59,7 +61,7 @@ namespace API.v1.Controllers
         public IActionResult Post([FromBody] PostRequest data)
         {
 #if USE_AUTHENTICATION
-            int userId = int.Parse(User.FindFirst("id").Value);
+            int userId = int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub).Value);
 #else
             int userId = (int)data.fromId;
 #endif

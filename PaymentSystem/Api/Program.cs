@@ -1,4 +1,6 @@
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +24,7 @@ builder.Services.ConfigureDependancies(builder.Configuration);
 
 // JWT Tokens Authentication setup
 #if USE_AUTHENTICATION
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -44,7 +47,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Admin", "true"));
-    options.AddPolicy("HasUserId", policy => policy.RequireClaim("id"));
+    options.AddPolicy("HasUserId", policy => policy.RequireClaim(JwtRegisteredClaimNames.Sub));
 });
 #endif
 

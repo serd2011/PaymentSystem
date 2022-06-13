@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IdentityModel.Tokens.Jwt;
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 using API.v1.Models.Account;
@@ -25,7 +27,7 @@ namespace API.v1.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            int userId = int.Parse(User.FindFirst("id").Value);
+            int userId = int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub).Value);
             return Get(userId);
         }
 #endif
